@@ -182,7 +182,8 @@ def test_real_connection_is_seen():
         col = collect.Collector()
         col.sample()
         assert "1.1.1.1" in col.servers
-        assert any("python" in a.lower() for a in col.servers["1.1.1.1"].apps)
+        me = psutil.Process()
+        assert collect.app_name(me.name(), me.exe()) in col.servers["1.1.1.1"].apps
 
 
 def test_parse_displaydns():
@@ -248,9 +249,9 @@ def test_privacy_grade():
 
 def test_render(db):
     from rich.console import Console
-    import os
+    import io
     col = collector_with({"1.0.0.1": {"Google Chrome"}, "74.119.118.5": {"Google Chrome"}, "52.1.1.1": {"Slack"}})
-    c = Console(width=160, record=True, file=open(os.devnull, "w"))
+    c = Console(width=160, record=True, file=io.StringIO())
     cli.render(report.build(col, 60, db), c)
     out = c.export_text()
     assert "Who does my computer talk to?" in out and "Criteo" in out and "ads/tracking" in out and "uvx whotalks" in out
