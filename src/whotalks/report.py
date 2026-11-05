@@ -125,7 +125,7 @@ def _findings(rep: Report) -> None:
     landlords = [c for c in rep.companies if c.kind in (orgs.CLOUD, orgs.CDN)]
     rented = sum(len(c.servers) for c in landlords)
     if rented:
-        f.append(f"{rented} servers are rented from clouds and CDNs ({_list([c.name for c in landlords], 3)}): "
+        f.append(f"{plural(rented, 'server')} {'is' if rented == 1 else 'are'} rented from clouds and CDNs ({_list([c.name for c in landlords], 3)}): "
                  "those are the landlords, so check the app column for who's actually behind them.")
     if rep.apps:
         top = rep.apps[0]
